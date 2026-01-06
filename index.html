@@ -154,8 +154,14 @@
         // GitHub仓库配置
         const githubConfig = {
             username: 'su200732',
-            repo: '-',
+            repo: 'photo-album', // 照片仓库
             branch: 'main'
+        };
+        
+        // 图片加载优化配置
+        const imageConfig = {
+            // 图片占位符（减少用户等待焦虑）
+            placeholder: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZiIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkxhZGRpbmc8L3RleHQ+Cjwvc3ZnPg=='
         };
         
         // 图片文件扩展名
@@ -164,68 +170,52 @@
         // 获取相册容器
         const album = document.getElementById('album');
         
-        // 缓存机制 - 缓存照片数据，避免重复请求
-        const photoCache = {
-            data: null,
-            timestamp: 0,
-            expiry: 5 * 60 * 1000 // 5分钟缓存
-        };
-        
         // 创建照片卡片
         function createPhotoCard(photo) {
             const card = document.createElement('div');
             card.className = 'photo-card';
             
-            // 创建图片容器，用于显示加载状态
+            // 创建图片容器（用于优化加载）
             const imgContainer = document.createElement('div');
             imgContainer.style.position = 'relative';
             imgContainer.style.width = '100%';
             imgContainer.style.height = '200px';
-            
-            // 创建加载状态元素
-            const loading = document.createElement('div');
-            loading.style.position = 'absolute';
-            loading.style.top = '0';
-            loading.style.left = '0';
-            loading.style.width = '100%';
-            loading.style.height = '100%';
-            loading.style.display = 'flex';
-            loading.style.justifyContent = 'center';
-            loading.style.alignItems = 'center';
-            loading.style.backgroundColor = '#f0f0f0';
-            loading.innerHTML = '<div style="width: 20px; height: 20px; border: 2px solid #ccc; border-top-color: #333; border-radius: 50%; animation: spin 1s linear infinite;"></div>';
-            
-            // 添加旋转动画
-            const style = document.createElement('style');
-            style.textContent = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
-            document.head.appendChild(style);
+            imgContainer.style.overflow = 'hidden';
             
             // 创建图片元素
             const img = document.createElement('img');
-            img.src = photo.url;
             img.alt = photo.title;
-            img.loading = 'lazy'; // 懒加载
+            img.loading = 'lazy'; // 浏览器原生懒加载
             img.style.width = '100%';
             img.style.height = '100%';
             img.style.objectFit = 'cover';
-            img.style.display = 'block';
-            img.style.opacity = '0';
-            img.style.transition = 'opacity 0.3s ease';
+            img.style.transition = 'opacity 0.3s ease-in-out';
+            img.style.opacity = '0'; // 初始透明
             
-            // 图片加载完成后隐藏加载状态
-            img.onload = function() {
-                loading.style.display = 'none';
+            // 设置占位符
+            img.src = imageConfig.placeholder;
+            
+            // 延迟加载真实图片，减少初始加载压力
+            setTimeout(() => {
+                // 预加载图片
+                const preloadImg = new Image();
+                preloadImg.src = photo.url;
+                preloadImg.onload = () => {
+                    img.src = photo.url; // 加载完成后替换为真实图片
+                    img.style.opacity = '1'; // 淡入效果
+                };
+                preloadImg.onerror = () => {
+                    console.error('图片加载失败:', photo.url);
+                    img.src = imageConfig.placeholder;
+                    img.style.opacity = '1';
+                };
+            }, 100); // 小延迟，让页面先渲染
+            
+            // 添加图片加载完成事件
+            img.onload = () => {
                 img.style.opacity = '1';
             };
             
-            // 图片加载失败处理
-            img.onerror = function() {
-                loading.style.backgroundColor = '#ffebee';
-                loading.innerHTML = '<div style="color: #c62828; font-size: 14px;">加载失败</div>';
-            };
-            
-            // 添加到图片容器
-            imgContainer.appendChild(loading);
             imgContainer.appendChild(img);
             
             const info = document.createElement('div');
@@ -258,23 +248,28 @@
             return imageExtensions.includes(ext);
         }
         
-        // 从GitHub API获取照片列表
+        // 从GitHub API获取照片列表（带缓存优化）
         async function fetchPhotosFromGithub() {
-            // 检查缓存是否有效
-            const now = Date.now();
-            if (photoCache.data && (now - photoCache.timestamp) < photoCache.expiry) {
-                console.log('使用缓存的照片数据');
-                return photoCache.data;
-            }
-            
             try {
+                // 检查本地缓存（10分钟有效期）
+                const cacheKey = `github-photos-${githubConfig.username}-${githubConfig.repo}-${githubConfig.branch}`;
+                const cachedData = localStorage.getItem(cacheKey);
+                const cacheTime = localStorage.getItem(`${cacheKey}-time`);
+                
+                // 如果缓存存在且未过期（10分钟），直接使用缓存
+                if (cachedData && cacheTime && (Date.now() - parseInt(cacheTime)) < 10 * 60 * 1000) {
+                    console.log('使用缓存的照片数据');
+                    return JSON.parse(cachedData);
+                }
+                
                 const url = `https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/?ref=${githubConfig.branch}`;
                 const response = await fetch(url, {
                     headers: {
-                        'Accept': 'application/vnd.github.v3+json',
-                        'User-Agent': 'Photo-Album-App'
+                        'Accept': 'application/vnd.github.v3+json' // 使用GitHub API v3
                     },
-                    cache: 'default' // 使用浏览器缓存
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache' // 强制获取最新数据
                 });
                 
                 if (!response.ok) {
@@ -296,18 +291,22 @@
                     }
                 });
                 
-                // 更新缓存
-                photoCache.data = photos;
-                photoCache.timestamp = now;
+                // 保存到本地缓存
+                localStorage.setItem(cacheKey, JSON.stringify(photos));
+                localStorage.setItem(`${cacheKey}-time`, Date.now().toString());
                 
                 return photos;
             } catch (error) {
                 console.error('获取照片失败:', error);
-                // 如果缓存中有数据，返回缓存数据
-                if (photoCache.data) {
-                    console.log('使用缓存的照片数据');
-                    return photoCache.data;
+                
+                // 如果API请求失败，尝试使用缓存数据
+                const cacheKey = `github-photos-${githubConfig.username}-${githubConfig.repo}-${githubConfig.branch}`;
+                const cachedData = localStorage.getItem(cacheKey);
+                if (cachedData) {
+                    console.log('API请求失败，使用缓存数据');
+                    return JSON.parse(cachedData);
                 }
+                
                 return [];
             }
         }
