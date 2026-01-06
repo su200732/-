@@ -136,6 +136,58 @@
                 height: 120px;
             }
         }
+        
+        /* 底部导航栏样式 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px 0;
+            z-index: 999;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-item.active {
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        .nav-item.active .nav-icon {
+            transform: scale(1.2);
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-text {
+            font-size: 12px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -149,6 +201,22 @@
         <span class="close">&times;</span>
         <img class="modal-content" id="modalImg">
     </div>
+    
+    <!-- 底部导航栏 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-page="home">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-text">主页</div>
+        </div>
+        <div class="nav-item" data-page="album">
+            <div class="nav-icon">📷</div>
+            <div class="nav-text">相册</div>
+        </div>
+        <div class="nav-item" data-page="profile">
+            <div class="nav-icon">👤</div>
+            <div class="nav-text">我的</div>
+        </div>
+    </nav>
     
     <script>
         // GitHub仓库配置
@@ -367,6 +435,48 @@
             if (e.key === 'Escape') {
                 closeModal();
             }
+        });
+        
+        // 底部导航栏切换功能
+        document.addEventListener('DOMContentLoaded', () => {
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            // 添加导航栏点击事件
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // 移除所有激活状态
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    // 添加当前激活状态
+                    item.classList.add('active');
+                    
+                    // 获取当前页面类型
+                    const page = item.dataset.page;
+                    
+                    // 这里可以根据页面类型切换内容
+                    // 目前只有相册页面，所以只更新标题
+                    const title = document.querySelector('h1');
+                    if (title) {
+                        switch (page) {
+                            case 'home':
+                                title.textContent = '共连相册';
+                                break;
+                            case 'album':
+                                title.textContent = '我的相册';
+                                break;
+                            case 'profile':
+                                title.textContent = '个人中心';
+                                break;
+                            default:
+                                title.textContent = '共连相册';
+                        }
+                    }
+                    
+                    // 如果点击的是相册页面，可以重新加载相册
+                    if (page === 'album') {
+                        renderAlbum();
+                    }
+                });
+            });
         });
     </script>
 </body>
