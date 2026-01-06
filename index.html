@@ -140,7 +140,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>我的GitHub相册</h1>
+        <h1>共连相册</h1>
         <div class="album" id="album"></div>
     </div>
     
@@ -160,8 +160,8 @@
         
         // 图片加载优化配置
         const imageConfig = {
-            // 图片占位符（减少用户等待焦虑）
-            placeholder: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZiIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkxhZGRpbmc8L3RleHQ+Cjwvc3ZnPg=='
+            // 图片占位符（带旋转动画的加载提示）
+            placeholder: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZiIvPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNTAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMSIvPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNDAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMyIvPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iMzAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuNCIvPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iMjAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuNSIvPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iMTAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuNiIvPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNSIgZmlsbD0iIzAwMCIgb3BhY2l0eT0iMC43Ii8+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9InVybCgjcmlnaHQpIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+5p2O54mHIOWKoOWkpzwvdGV4dD4KICA8dGV4dCB4PSI1MCUiIHk9Ijc1JSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7mnK/miJDmrK/ljLrpq5jmoLzlj6/miJDmnK/liqjlj6/miJDovp/miJDmlrDlj6/miJDovp/lsI/luq88L3RleHQ+Cjwvc3ZnPg=='
         };
         
         // 图片文件扩展名
