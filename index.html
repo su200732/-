@@ -189,6 +189,200 @@
 <body>
     <div class="container">
         <h1>共连相册</h1>
+        
+        <!-- 上传按钮和表单 -->
+        <div style="text-align: center; margin-bottom: clamp(20px, 4vw, 40px);">
+            <button id="uploadBtn" style="
+                padding: clamp(8px, 2vw, 16px) clamp(16px, 4vw, 32px);
+                font-size: clamp(14px, 2.5vw, 18px);
+                font-weight: bold;
+                color: white;
+                background-color: #3498db;
+                border: none;
+                border-radius: clamp(4px, 1vw, 8px);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            ">
+                📤 上传照片
+            </button>
+        </div>
+        
+        <!-- 上传表单模态框 -->
+        <div id="uploadModal" class="modal" style="display: none; background-color: rgba(0, 0, 0, 0.8);">
+            <div style="
+                background-color: white;
+                margin: 5% auto;
+                padding: clamp(20px, 4vw, 40px);
+                border-radius: clamp(8px, 2vw, 16px);
+                width: 90%;
+                max-width: 500px;
+                position: relative;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            ">
+                <span class="close" style="
+                    position: absolute;
+                    right: clamp(15px, 3vw, 30px);
+                    top: clamp(15px, 3vw, 30px);
+                    font-size: clamp(24px, 6vw, 40px);
+                    font-weight: bold;
+                    color: #666;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                ">&times;</span>
+                
+                <h2 style="
+                    text-align: center;
+                    margin-bottom: clamp(20px, 4vw, 30px);
+                    color: #2c3e50;
+                    font-size: clamp(20px, 4vw, 28px);
+                ">
+                    上传照片到相册
+                </h2>
+                
+                <form id="uploadForm" style="display: flex; flex-direction: column; gap: clamp(15px, 3vw, 25px);">
+                    <!-- GitHub Token 输入（用于授权上传） -->
+                    <div>
+                        <label style="
+                            display: block;
+                            margin-bottom: clamp(5px, 1vw, 10px);
+                            font-weight: bold;
+                            color: #333;
+                            font-size: clamp(14px, 2.5vw, 16px);
+                        ">
+                            GitHub 访问令牌 (Token) <span style="color: #e74c3c;">*</span>
+                        </label>
+                        <input 
+                            type="password" 
+                            id="githubToken" 
+                            placeholder="请输入您的GitHub访问令牌（需要repo权限）" 
+                            style="
+                                width: 100%;
+                                padding: clamp(10px, 2vw, 16px);
+                                font-size: clamp(14px, 2.5vw, 16px);
+                                border: 1px solid #ddd;
+                                border-radius: clamp(4px, 1vw, 8px);
+                                box-sizing: border-box;
+                            "
+                            required
+                        >
+                        <small style="
+                            display: block;
+                            margin-top: clamp(5px, 1vw, 10px);
+                            color: #666;
+                            font-size: clamp(12px, 2vw, 14px);
+                        ">
+                            如何获取令牌：<a href="https://docs.github.com/zh/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token" target="_blank" style="color: #3498db; text-decoration: none;">GitHub 官方指南</a>（需要勾选 repo 权限）
+                        </small>
+                    </div>
+                    
+                    <!-- 照片文件选择 -->
+                    <div>
+                        <label style="
+                            display: block;
+                            margin-bottom: clamp(5px, 1vw, 10px);
+                            font-weight: bold;
+                            color: #333;
+                            font-size: clamp(14px, 2.5vw, 16px);
+                        ">
+                            选择照片 <span style="color: #e74c3c;">*</span>
+                        </label>
+                        <input 
+                            type="file" 
+                            id="photoFile" 
+                            accept="image/*" 
+                            style="
+                                width: 100%;
+                                padding: clamp(10px, 2vw, 16px);
+                                font-size: clamp(14px, 2.5vw, 16px);
+                                border: 1px solid #ddd;
+                                border-radius: clamp(4px, 1vw, 8px);
+                                box-sizing: border-box;
+                                cursor: pointer;
+                            "
+                            required
+                        >
+                    </div>
+                    
+                    <!-- 照片描述（可选） -->
+                    <div>
+                        <label style="
+                            display: block;
+                            margin-bottom: clamp(5px, 1vw, 10px);
+                            font-weight: bold;
+                            color: #333;
+                            font-size: clamp(14px, 2.5vw, 16px);
+                        ">
+                            照片描述（可选）
+                        </label>
+                        <textarea 
+                            id="photoDescription" 
+                            placeholder="请输入照片描述（可选）" 
+                            rows="3" 
+                            style="
+                                width: 100%;
+                                padding: clamp(10px, 2vw, 16px);
+                                font-size: clamp(14px, 2.5vw, 16px);
+                                border: 1px solid #ddd;
+                                border-radius: clamp(4px, 1vw, 8px);
+                                resize: vertical;
+                                box-sizing: border-box;
+                            "
+                        ></textarea>
+                    </div>
+                    
+                    <!-- 表单操作按钮 -->
+                    <div style="display: flex; gap: clamp(10px, 2vw, 20px); justify-content: center;">
+                        <button 
+                            type="button" 
+                            id="cancelUpload" 
+                            style="
+                                flex: 1;
+                                padding: clamp(10px, 2vw, 16px);
+                                font-size: clamp(14px, 2.5vw, 18px);
+                                font-weight: bold;
+                                color: #666;
+                                background-color: #f0f0f0;
+                                border: none;
+                                border-radius: clamp(4px, 1vw, 8px);
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                            "
+                        >
+                            取消
+                        </button>
+                        <button 
+                            type="submit" 
+                            style="
+                                flex: 2;
+                                padding: clamp(10px, 2vw, 16px);
+                                font-size: clamp(14px, 2.5vw, 18px);
+                                font-weight: bold;
+                                color: white;
+                                background-color: #2ecc71;
+                                border: none;
+                                border-radius: clamp(4px, 1vw, 8px);
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                            "
+                        >
+                            📤 上传照片
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- 上传状态信息 -->
+                <div id="uploadStatus" style="
+                    margin-top: clamp(20px, 4vw, 30px);
+                    padding: clamp(10px, 2vw, 16px);
+                    border-radius: clamp(4px, 1vw, 8px);
+                    text-align: center;
+                    font-size: clamp(14px, 2.5vw, 16px);
+                    display: none;
+                "></div>
+            </div>
+        </div>
+        
         <div class="album" id="album"></div>
     </div>
     
@@ -410,10 +604,154 @@
             }
         });
         
+        // 上传模态框控制
+        const uploadModal = document.getElementById('uploadModal');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const cancelUpload = document.getElementById('cancelUpload');
+        const uploadForm = document.getElementById('uploadForm');
+        const uploadStatus = document.getElementById('uploadStatus');
+        
+        // 打开上传模态框
+        uploadBtn.addEventListener('click', () => {
+            uploadModal.style.display = 'block';
+        });
+        
+        // 关闭上传模态框
+        function closeUploadModal() {
+            uploadModal.style.display = 'none';
+            uploadForm.reset();
+            uploadStatus.style.display = 'none';
+        }
+        
+        // 取消上传
+        cancelUpload.addEventListener('click', closeUploadModal);
+        
+        // 点击模态框外部关闭上传模态框
+        window.addEventListener('click', (e) => {
+            if (e.target === uploadModal) {
+                closeUploadModal();
+            }
+        });
+        
+        // 按下ESC键关闭上传模态框
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && uploadModal.style.display === 'block') {
+                closeUploadModal();
+            }
+        });
+        
+        // 显示上传状态
+        function showUploadStatus(message, isError = false) {
+            uploadStatus.textContent = message;
+            uploadStatus.style.display = 'block';
+            uploadStatus.style.color = isError ? '#e74c3c' : '#2ecc71';
+            uploadStatus.style.backgroundColor = isError ? '#ffebee' : '#e8f5e8';
+        }
+        
+        // 上传照片到GitHub
+        async function uploadPhotoToGithub(file, token, description = '') {
+            try {
+                // 读取文件内容
+                const reader = new FileReader();
+                const fileContent = await new Promise((resolve, reject) => {
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+                
+                // 提取base64内容（去掉data:image/xxx;base64,前缀）
+                const base64Content = fileContent.split(',')[1];
+                
+                // 生成唯一文件名
+                const timestamp = Date.now();
+                const fileName = `${timestamp}-${file.name}`;
+                
+                // GitHub API URL
+                const apiUrl = `https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${fileName}`;
+                
+                // 构建请求体
+                const requestBody = {
+                    message: `Upload photo: ${file.name}${description ? ` - ${description}` : ''}`,
+                    content: base64Content,
+                    branch: githubConfig.branch
+                };
+                
+                // 发送请求
+                const response = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `上传失败: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('上传照片失败:', error);
+                throw error;
+            }
+        }
+        
+        // 处理上传表单提交
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const token = document.getElementById('githubToken').value;
+            const fileInput = document.getElementById('photoFile');
+            const description = document.getElementById('photoDescription').value;
+            
+            if (!fileInput.files.length) {
+                showUploadStatus('请选择要上传的照片', true);
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            
+            // 检查文件类型
+            if (!imageExtensions.includes(file.name.toLowerCase().substring(file.name.lastIndexOf('.')))) {
+                showUploadStatus('请上传支持的图片格式（jpg, jpeg, png, gif, webp, svg）', true);
+                return;
+            }
+            
+            // 检查文件大小（限制10MB）
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                showUploadStatus('图片大小不能超过10MB', true);
+                return;
+            }
+            
+            try {
+                showUploadStatus('正在上传照片，请稍候...');
+                
+                // 上传照片
+                await uploadPhotoToGithub(file, token, description);
+                
+                showUploadStatus('照片上传成功！');
+                
+                // 重新加载相册
+                setTimeout(async () => {
+                    closeUploadModal();
+                    await renderAlbum();
+                }, 1500);
+            } catch (error) {
+                showUploadStatus(`上传失败: ${error.message}`, true);
+            }
+        });
+        
         // 按下ESC键关闭模态框
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeModal();
+                if (uploadModal.style.display === 'block') {
+                    closeUploadModal();
+                }
             }
         });
     </script>
