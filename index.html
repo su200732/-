@@ -241,40 +241,8 @@
                 </h2>
                 
                 <form id="uploadForm" style="display: flex; flex-direction: column; gap: clamp(15px, 3vw, 25px);">
-                    <!-- GitHub Token 输入（用于授权上传） -->
-                    <div>
-                        <label style="
-                            display: block;
-                            margin-bottom: clamp(5px, 1vw, 10px);
-                            font-weight: bold;
-                            color: #333;
-                            font-size: clamp(14px, 2.5vw, 16px);
-                        ">
-                            GitHub 访问令牌 (Token) <span style="color: #e74c3c;">*</span>
-                        </label>
-                        <input 
-                            type="password" 
-                            id="githubToken" 
-                            placeholder="请输入您的GitHub访问令牌（需要repo权限）" 
-                            style="
-                                width: 100%;
-                                padding: clamp(10px, 2vw, 16px);
-                                font-size: clamp(14px, 2.5vw, 16px);
-                                border: 1px solid #ddd;
-                                border-radius: clamp(4px, 1vw, 8px);
-                                box-sizing: border-box;
-                            "
-                            required
-                        >
-                        <small style="
-                            display: block;
-                            margin-top: clamp(5px, 1vw, 10px);
-                            color: #666;
-                            font-size: clamp(12px, 2vw, 14px);
-                        ">
-                            如何获取令牌：<a href="https://docs.github.com/zh/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token" target="_blank" style="color: #3498db; text-decoration: none;">GitHub 官方指南</a>（需要勾选 repo 权限）
-                        </small>
-                    </div>
+                    <!-- GitHub Token 已内置，无需用户输入 -->
+                    <input type="hidden" id="githubToken" value="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">
                     
                     <!-- 照片文件选择 -->
                     <div>
@@ -575,7 +543,7 @@
             });
         }
         
-        // 打开图片预览模态框
+        // 打开模态框
         function openModal(imgUrl) {
             const modal = document.getElementById('myModal');
             const modalImg = document.getElementById('modalImg');
@@ -584,7 +552,7 @@
             modalImg.src = imgUrl;
         }
         
-        // 关闭图片预览模态框
+        // 关闭模态框
         function closeModal() {
             const modal = document.getElementById('myModal');
             modal.style.display = 'none';
@@ -593,31 +561,23 @@
         // 初始化
         document.addEventListener('DOMContentLoaded', renderAlbum);
         
-        // 上传模态框控制
-        const uploadModal = document.getElementById('uploadModal');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const cancelUpload = document.getElementById('cancelUpload');
-        const uploadForm = document.getElementById('uploadForm');
-        const uploadStatus = document.getElementById('uploadStatus');
+        // 点击关闭按钮关闭模态框
+        document.querySelector('.close').addEventListener('click', closeModal);
         
-        // 获取所有关闭按钮
-        const closeButtons = document.querySelectorAll('.close');
-        // 为第一个关闭按钮（图片预览模态框）添加事件监听器
-        if (closeButtons.length > 0) {
-            closeButtons[0].addEventListener('click', closeModal);
-        }
-        // 为第二个关闭按钮（上传模态框）添加事件监听器
-        if (closeButtons.length > 1) {
-            closeButtons[1].addEventListener('click', closeUploadModal);
-        }
-        
-        // 点击图片预览模态框外部关闭
+        // 点击模态框外部关闭模态框
         window.addEventListener('click', (e) => {
             const modal = document.getElementById('myModal');
             if (e.target === modal) {
                 closeModal();
             }
         });
+        
+        // 上传模态框控制
+        const uploadModal = document.getElementById('uploadModal');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const cancelUpload = document.getElementById('cancelUpload');
+        const uploadForm = document.getElementById('uploadForm');
+        const uploadStatus = document.getElementById('uploadStatus');
         
         // 打开上传模态框
         uploadBtn.addEventListener('click', () => {
@@ -633,6 +593,19 @@
         
         // 取消上传
         cancelUpload.addEventListener('click', closeUploadModal);
+        
+        // 为所有关闭按钮添加事件监听器
+        document.querySelectorAll('.close').forEach(closeBtn => {
+            closeBtn.addEventListener('click', (e) => {
+                // 检查点击的是哪个模态框的关闭按钮
+                const modal = e.target.closest('.modal');
+                if (modal.id === 'uploadModal') {
+                    closeUploadModal();
+                } else if (modal.id === 'myModal') {
+                    closeModal();
+                }
+            });
+        });
         
         // 点击模态框外部关闭上传模态框
         window.addEventListener('click', (e) => {
