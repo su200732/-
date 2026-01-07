@@ -18,57 +18,69 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: clamp(10px, 3vw, 30px); /* 自适应内边距 */
         }
         
         h1 {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: clamp(20px, 4vw, 40px); /* 自适应间距 */
             color: #2c3e50;
+            font-size: clamp(24px, 5vw, 36px); /* 自适应字体大小 */
         }
         
         .album {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(clamp(150px, 25vw, 280px), 1fr)); /* 自适应卡片宽度 */
+            gap: clamp(10px, 2vw, 25px); /* 自适应间距 */
+            align-items: stretch; /* 确保卡片等高 */
         }
         
         .photo-card {
             background-color: white;
-            border-radius: 8px;
+            border-radius: clamp(6px, 1vw, 10px); /* 自适应圆角 */
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* 确保卡片高度一致 */
         }
         
         .photo-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transform: translateY(-clamp(3px, 0.5vw, 8px)); /* 自适应悬浮效果 */
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
         }
         
         .photo-card img {
             width: 100%;
-            height: 200px;
+            aspect-ratio: 1 / 1; /* 保持正方形比例 */
             object-fit: cover;
             display: block;
+            flex-shrink: 0; /* 防止图片压缩 */
         }
         
         .photo-info {
-            padding: 15px;
+            padding: clamp(10px, 2vw, 18px); /* 自适应内边距 */
             text-align: center;
+            flex-grow: 1; /* 填充剩余空间 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .photo-title {
-            font-size: 16px;
+            font-size: clamp(14px, 2.5vw, 18px); /* 自适应字体大小 */
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: clamp(3px, 0.5vw, 8px); /* 自适应间距 */
+            color: #333;
+            word-break: break-word; /* 防止长文件名溢出 */
         }
         
         .photo-description {
-            font-size: 14px;
+            font-size: clamp(12px, 2vw, 14px); /* 自适应字体大小 */
             color: #666;
         }
         
@@ -81,112 +93,96 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.95); /* 更深的背景，提升对比度 */
             overflow: auto;
+            backdrop-filter: blur(5px); /* 添加毛玻璃效果 */
         }
         
         .modal-content {
             margin: auto;
             display: block;
-            max-width: 90%;
-            max-height: 90%;
+            max-width: 95%;
+            max-height: 95%;
+            width: auto;
+            height: auto;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            border-radius: clamp(4px, 1vw, 8px); /* 自适应圆角 */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); /* 添加阴影效果 */
         }
         
         .close {
             position: absolute;
-            top: 20px;
-            right: 35px;
+            top: clamp(15px, 3vw, 30px); /* 自适应位置 */
+            right: clamp(15px, 3vw, 30px); /* 自适应位置 */
             color: #f1f1f1;
-            font-size: 40px;
+            font-size: clamp(28px, 6vw, 50px); /* 自适应字体大小 */
             font-weight: bold;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             cursor: pointer;
+            z-index: 1001;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* 添加文字阴影 */
         }
         
         .close:hover,
         .close:focus {
-            color: #bbb;
-            text-decoration: none;
-            cursor: pointer;
+            color: #fff;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            transform: scale(1.1); /* 悬浮放大效果 */
         }
         
-        /* 响应式设计 */
+        /* 响应式设计优化 */
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 100%; /* 大屏幕上使用全宽 */
+            }
+        }
+        
         @media (max-width: 768px) {
             .album {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 15px;
-            }
-            
-            .photo-card img {
-                height: 150px;
+                grid-template-columns: repeat(auto-fill, minmax(clamp(140px, 35vw, 220px), 1fr)); /* 平板上更宽的卡片 */
             }
         }
         
         @media (max-width: 480px) {
             .album {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 10px;
+                grid-template-columns: repeat(auto-fill, minmax(clamp(120px, 45vw, 180px), 1fr)); /* 手机上更宽的卡片 */
             }
             
-            .photo-card img {
-                height: 120px;
+            /* 优化手机端触摸体验 */
+            .photo-card {
+                touch-action: manipulation; /* 优化触摸操作 */
             }
         }
         
-        /* 底部导航栏样式 */
-        .bottom-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background-color: white;
-            border-radius: 16px;
-            box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 15px 0;
-            z-index: 999;
+        /* 横屏模式优化 */
+        @media (orientation: landscape) and (max-width: 900px) {
+            .album {
+                grid-template-columns: repeat(auto-fill, minmax(clamp(120px, 20vw, 200px), 1fr));
+            }
         }
         
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            flex: 1;
-        }
-        
-        .nav-item:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-        
-        .nav-item.active {
-            color: #2c3e50;
-            font-weight: bold;
-        }
-        
-        .nav-item.active .nav-icon {
-            transform: scale(1.2);
-        }
-        
-        .nav-icon {
-            font-size: 24px;
-            margin-bottom: 5px;
-            transition: transform 0.3s ease;
-        }
-        
-        .nav-text {
-            font-size: 12px;
-            font-weight: 500;
+        /* 深色模式支持 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a;
+                color: #e0e0e0;
+            }
+            
+            .photo-card {
+                background-color: #2d2d2d;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            }
+            
+            .photo-title {
+                color: #e0e0e0;
+            }
+            
+            .photo-description {
+                color: #b0b0b0;
+            }
         }
     </style>
 </head>
@@ -201,22 +197,6 @@
         <span class="close">&times;</span>
         <img class="modal-content" id="modalImg">
     </div>
-    
-    <!-- 底部导航栏 -->
-    <nav class="bottom-nav">
-        <div class="nav-item active" data-page="home">
-            <div class="nav-icon">🏠</div>
-            <div class="nav-text">主页</div>
-        </div>
-        <div class="nav-item" data-page="album">
-            <div class="nav-icon">📷</div>
-            <div class="nav-text">相册</div>
-        </div>
-        <div class="nav-item" data-page="profile">
-            <div class="nav-icon">👤</div>
-            <div class="nav-text">我的</div>
-        </div>
-    </nav>
     
     <script>
         // GitHub仓库配置
@@ -435,48 +415,6 @@
             if (e.key === 'Escape') {
                 closeModal();
             }
-        });
-        
-        // 底部导航栏切换功能
-        document.addEventListener('DOMContentLoaded', () => {
-            const navItems = document.querySelectorAll('.nav-item');
-            
-            // 添加导航栏点击事件
-            navItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    // 移除所有激活状态
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    // 添加当前激活状态
-                    item.classList.add('active');
-                    
-                    // 获取当前页面类型
-                    const page = item.dataset.page;
-                    
-                    // 这里可以根据页面类型切换内容
-                    // 目前只有相册页面，所以只更新标题
-                    const title = document.querySelector('h1');
-                    if (title) {
-                        switch (page) {
-                            case 'home':
-                                title.textContent = '共连相册';
-                                break;
-                            case 'album':
-                                title.textContent = '我的相册';
-                                break;
-                            case 'profile':
-                                title.textContent = '个人中心';
-                                break;
-                            default:
-                                title.textContent = '共连相册';
-                        }
-                    }
-                    
-                    // 如果点击的是相册页面，可以重新加载相册
-                    if (page === 'album') {
-                        renderAlbum();
-                    }
-                });
-            });
         });
     </script>
 </body>
