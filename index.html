@@ -575,7 +575,7 @@
             });
         }
         
-        // 打开模态框
+        // 打开图片预览模态框
         function openModal(imgUrl) {
             const modal = document.getElementById('myModal');
             const modalImg = document.getElementById('modalImg');
@@ -584,7 +584,7 @@
             modalImg.src = imgUrl;
         }
         
-        // 关闭模态框
+        // 关闭图片预览模态框
         function closeModal() {
             const modal = document.getElementById('myModal');
             modal.style.display = 'none';
@@ -593,23 +593,31 @@
         // 初始化
         document.addEventListener('DOMContentLoaded', renderAlbum);
         
-        // 点击关闭按钮关闭模态框
-        document.querySelector('.close').addEventListener('click', closeModal);
-        
-        // 点击模态框外部关闭模态框
-        window.addEventListener('click', (e) => {
-            const modal = document.getElementById('myModal');
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-        
         // 上传模态框控制
         const uploadModal = document.getElementById('uploadModal');
         const uploadBtn = document.getElementById('uploadBtn');
         const cancelUpload = document.getElementById('cancelUpload');
         const uploadForm = document.getElementById('uploadForm');
         const uploadStatus = document.getElementById('uploadStatus');
+        
+        // 获取所有关闭按钮
+        const closeButtons = document.querySelectorAll('.close');
+        // 为第一个关闭按钮（图片预览模态框）添加事件监听器
+        if (closeButtons.length > 0) {
+            closeButtons[0].addEventListener('click', closeModal);
+        }
+        // 为第二个关闭按钮（上传模态框）添加事件监听器
+        if (closeButtons.length > 1) {
+            closeButtons[1].addEventListener('click', closeUploadModal);
+        }
+        
+        // 点击图片预览模态框外部关闭
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('myModal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
         
         // 打开上传模态框
         uploadBtn.addEventListener('click', () => {
@@ -720,10 +728,10 @@
                 return;
             }
             
-            // 检查文件大小（限制10MB）
-            const maxSize = 10 * 1024 * 1024; // 10MB
+            // 检查文件大小（限制100MB）
+            const maxSize = 100 * 1024 * 1024; // 100MB
             if (file.size > maxSize) {
-                showUploadStatus('图片大小不能超过10MB', true);
+                showUploadStatus('图片大小不能超过100MB', true);
                 return;
             }
             
